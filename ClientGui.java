@@ -1,10 +1,13 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,11 +22,13 @@ import java.net.UnknownHostException;
 
 public class ClientGui extends JFrame{
 	private final JButton[] buttons;
-	private final Dimension preferredPanelDimension;
 	public static enum State {
 		AWAITING_SERVER, AWAITING_USER
 	};
 	private State state; 
+	
+	// main panel
+	private final JPanel mainPanel;
 	
 	// button panel
 	private final JPanel buttonPanel;
@@ -39,27 +44,34 @@ public class ClientGui extends JFrame{
 	private final JPanel instructionsPanel;
 	private JLabel errorsLabel;
 	private JLabel serverMessage;
+	private JLabel instructionsLabel;
 	
 	
 	public ClientGui(){
 		super("Knock Knock");
-		this.preferredPanelDimension = new Dimension(475, 315);
 		this.state = State.AWAITING_SERVER;
+		
+		// initialize main panel
+		mainPanel = new JPanel();
+		mainPanel.setLayout(new GridLayout(2, 1));
 		
 		// initialize instructions panel
 		instructionsPanel = new JPanel();
-		errorsLabel = new JLabel("No errors yet!");
+		instructionsPanel.setLayout(new GridLayout(3, 1));
+		instructionsLabel = new JLabel("No instructions yet!", SwingConstants.CENTER);
+		instructionsPanel.add(instructionsLabel);
+		errorsLabel = new JLabel("No errors yet!", SwingConstants.CENTER);
 		instructionsPanel.add(errorsLabel);
-		serverMessage = new JLabel("No server message yet!");
+		serverMessage = new JLabel("No server message yet!", SwingConstants.CENTER);
 		instructionsPanel.add(serverMessage);
-		add(instructionsPanel, BorderLayout.NORTH);
+		mainPanel.add(instructionsPanel);
 		
 		// initialize input panel
 		inputPanel = new JPanel();
 		inputField = new JTextField();
 		inputField.setText("Testing - Input field");
 		inputPanel.add(inputField);
-		add(inputPanel, BorderLayout.CENTER);
+		mainPanel.add(inputPanel);
 		
 		// initialize button panel
 		buttons = new JButton[2];
@@ -90,6 +102,8 @@ public class ClientGui extends JFrame{
 			buttonPanel.add(buttons[count]);
 		}		
 		add(buttonPanel, BorderLayout.SOUTH);
+		
+		add(mainPanel, BorderLayout.CENTER);
 		
 		this.start();
 	}

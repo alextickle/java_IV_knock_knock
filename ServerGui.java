@@ -62,6 +62,9 @@ public class ServerGui extends JFrame{
 			public void actionPerformed(ActionEvent event){
 				try {
 					startServer();
+					startServer.setVisible(false);
+					createClient.setVisible(true);
+					instructionsLabel.setText("Server running");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -76,6 +79,8 @@ public class ServerGui extends JFrame{
 			public void actionPerformed(ActionEvent event){
 				try {
 					stopServer();
+					startServer.setVisible(true);
+					createClient.setVisible(false);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -83,7 +88,7 @@ public class ServerGui extends JFrame{
 		});
 		
 		createClient = new JButton("Create Client");
-		createClient.setVisible(true);
+		createClient.setVisible(false);
 		buttons[2] = createClient;
 		createClient.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event){
@@ -101,29 +106,14 @@ public class ServerGui extends JFrame{
 	}
 		
 	// opens view as a JFrame
-	public void start() throws IOException{
+	public void start(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(500, 400);
 		this.setVisible(true);
 	}
 	
 	public void startServer() throws IOException{
-        serverSocket = null;
-        boolean listening = true;
-
-        try {
-            serverSocket = new ServerSocket(port);
-            instructionsLabel.setText("Server listening on port " + port);
-        } catch (IOException e) {
-            errorsLabel.setText("Could not listen on port " + port);
-            System.exit(-1);
-        }
-        
-        while (listening){
-	       new KKMultiServerThread(serverSocket.accept()).start();
-        }
-
-        serverSocket.close();
+		new Thread(new KKMultiServer()).start();
 	}
 	
 	public void stopServer() throws IOException{

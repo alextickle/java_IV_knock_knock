@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -91,12 +92,13 @@ public class ClientGui extends JFrame{
 			public void actionPerformed(ActionEvent event){
 				// immediately close socket and ClientGui
 				try {
+					out.close();
+					in.close();
 					socket.close();
-					System.exit(0);
-				} catch (IOException e) {
+					dispose();
+				} catch (Exception e) {
 					errorsLabel.setText(e.toString());
 				}
-				instructionsLabel.setText("socket closed");
 		    }
 		});
 		
@@ -130,7 +132,7 @@ public class ClientGui extends JFrame{
 		
 	// opens view as a JFrame
 	public void start() throws IOException{
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(500, 400);
 		this.setVisible(true);
 	

@@ -3,6 +3,12 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -11,13 +17,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class ClientGui extends JFrame{
+	String fromServer;
+    String fromUser;
 	private final JButton[] buttons;
 	private String inputString;
 	private String serverMessage;
-	public static enum State {
-		AWAITING_SERVER, AWAITING_USER
-	};
-	private State state; 
+	private PrintWriter out;
+	private BufferedReader in;
 	
 	// main panel
 	private final JPanel mainPanel;
@@ -35,13 +41,20 @@ public class ClientGui extends JFrame{
 	// instructions panel
 	private final JPanel instructionsPanel;
 	private JLabel errorsLabel;
-	private JLabel serverMesageLabel;
+	private JLabel serverMessageLabel;
 	private JLabel instructionsLabel;
 	
 	
-	public ClientGui(){
+	public ClientGui(Socket socket){
 		super("Knock Knock");
-		this.state = State.AWAITING_SERVER;
+		try {
+			out = new PrintWriter(socket.getOutputStream(), true);
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
 		inputString = "";
 		serverMessage = "";
 		
@@ -56,8 +69,8 @@ public class ClientGui extends JFrame{
 		instructionsPanel.add(instructionsLabel);
 		errorsLabel = new JLabel("", SwingConstants.CENTER);
 		instructionsPanel.add(errorsLabel);
-		serverMesageLabel = new JLabel("No server message yet!", SwingConstants.CENTER);
-		instructionsPanel.add(serverMesageLabel);
+		serverMessageLabel = new JLabel("No server message yet!", SwingConstants.CENTER);
+		instructionsPanel.add(serverMessageLabel);
 		mainPanel.add(instructionsPanel);
 		
 		// initialize input panel
@@ -77,8 +90,13 @@ public class ClientGui extends JFrame{
 		stopButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event){
 				// immediately close socket and ClientGui
-//		        kkSocket.close();
-		        System.exit(0);
+				try {
+					socket.close();
+					System.exit(0);
+				} catch (IOException e) {
+					errorsLabel.setText(e.toString());
+				}
+				instructionsLabel.setText("socket closed");
 		    }
 		});
 		
@@ -89,11 +107,10 @@ public class ClientGui extends JFrame{
 			public void actionPerformed(ActionEvent event){
 				inputString = inputField.getText();
 				System.out.println(inputString);
-				// TODO send to server
+				out.println(inputString);
 				inputField.setText("");
 				serverMessage = "";
 				inputString = "";
-				state = State.AWAITING_SERVER;
 		    }
 		});
 		
@@ -103,15 +120,38 @@ public class ClientGui extends JFrame{
 		add(buttonPanel, BorderLayout.SOUTH);
 		
 		add(mainPanel, BorderLayout.CENTER);
+		try {
+			this.start();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 		
-		this.start();
 	}
 		
 	// opens view as a JFrame
-	public void start(){
+	public void start() throws IOException{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(500, 400);
 		this.setVisible(true);
+	
+			while ((fromServer = in.readLine()) != null) {
+			    setServerMessageLabel("Server: " + fromServer);
+			    if (fromServer.equals("Bye."))
+			        break;
+			}
+	}
+
+	
+	public void setInstructionLabel(String str){
+		this.instructionsLabel.setText(str);
+	}
+	
+	public void setErrorsLabel(String str){
+		this.errorsLabel.setText(str);
+	}
+	
+	public void setServerMessageLabel(String str){
+		this.serverMessageLabel.setText(str);
 	}
 	
 }

@@ -46,7 +46,7 @@ public class ClientGui extends JFrame{
 	
 	
 	public ClientGui(Socket socket){
-		super("Knock Knock");
+		super("Client");
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

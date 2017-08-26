@@ -4,12 +4,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -51,11 +48,7 @@ public class ClientGui extends JFrame{
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        
+		} catch (Exception e1) {}
 		inputString = "";
 		serverMessage = "";
 		
@@ -66,7 +59,7 @@ public class ClientGui extends JFrame{
 		// initialize instructions panel
 		instructionsPanel = new JPanel();
 		instructionsPanel.setLayout(new GridLayout(3, 1));
-		instructionsLabel = new JLabel("No instructions yet!", SwingConstants.CENTER);
+		instructionsLabel = new JLabel("", SwingConstants.CENTER);
 		instructionsPanel.add(instructionsLabel);
 		errorsLabel = new JLabel("", SwingConstants.CENTER);
 		instructionsPanel.add(errorsLabel);
@@ -124,14 +117,13 @@ public class ClientGui extends JFrame{
 		add(mainPanel, BorderLayout.CENTER);
 		try {
 			this.start();
-		} catch (IOException e){
-			e.printStackTrace();
+		} catch (Exception e){
 		}
 		
 	}
 		
 	// opens view as a JFrame
-	public void start() throws IOException{
+	public void start() throws Exception{
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(500, 400);
 		this.setVisible(true);

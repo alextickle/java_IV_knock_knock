@@ -3,22 +3,15 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class ServerGui extends JFrame{
-	ServerSocket serverSocket;
+	Thread thread;
+	KKMultiServer server;
 	int port = 4449;
 	
 	// main panel
@@ -47,8 +40,9 @@ public class ServerGui extends JFrame{
 		instructionsPanel = new JPanel();
 		instructionsPanel.setLayout(new GridLayout(3, 1));
 		errorsLabel = new JLabel("", SwingConstants.CENTER);
-		instructionsLabel = new JLabel("", SwingConstants.CENTER);
 		instructionsPanel.add(errorsLabel);
+		instructionsLabel = new JLabel("", SwingConstants.CENTER);
+		instructionsPanel.add(instructionsLabel);
 		mainPanel.add(instructionsPanel);
 		
 		// initialize button panel
@@ -63,11 +57,10 @@ public class ServerGui extends JFrame{
 				try {
 					startServer();
 					startServer.setVisible(false);
+					stopServer.setVisible(true);
 					createClient.setVisible(true);
 					instructionsLabel.setText("Server running");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				} catch (Exception e) {}
 				
 		    }
 		});
@@ -79,11 +72,11 @@ public class ServerGui extends JFrame{
 			public void actionPerformed(ActionEvent event){
 				try {
 					stopServer();
+					instructionsLabel.setText("Server stopped");
 					startServer.setVisible(true);
+					stopServer.setVisible(false);
 					createClient.setVisible(false);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				} catch (Exception e) {}
 		    }
 		});
 		
@@ -112,12 +105,14 @@ public class ServerGui extends JFrame{
 		this.setVisible(true);
 	}
 	
-	public void startServer() throws IOException{
-		new Thread(new KKMultiServer()).start();
+	public void startServer() throws Exception{
+		server = new KKMultiServer();
+		thread = new Thread(server);
+		thread.start();
 	}
 	
-	public void stopServer() throws IOException{
-		serverSocket.close();
+	public void stopServer() throws Exception{
+		server.listening = false;
 	}
 	
 	public void createClient(){

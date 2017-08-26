@@ -1,36 +1,41 @@
 import java.net.*;
-import java.io.*;
+import java.util.ArrayList;
 
 public class KKMultiServer implements Runnable{
 	boolean listening = true;
+	ArrayList<KKMultiServerThread> threads = new ArrayList<KKMultiServerThread>();
+	KKMultiServerThread temp;
+	
     public void run() {
         ServerSocket serverSocket = null;
+        
         listening = true;
         System.out.println("Server starting...");
 
         try {
             serverSocket = new ServerSocket(4449);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("Could not listen on port: 4449.");
         }
         
         try {
 	    	while (listening){
-	  	       new KKMultiServerThread(serverSocket.accept()).start();
+	  	       temp = new KKMultiServerThread(serverSocket.accept());
+	  	       threads.add(temp);
+	  	       temp.start();
 	        }
-        } catch(IOException e){
-        	e.printStackTrace();
-        }
+        } catch(Exception e){}
         
         try {
         	serverSocket.close();
-        } catch(IOException e){
-        	e.printStackTrace();
-        }
+        } catch(Exception e){}
         
     }
     
     public void stopServer(){
     	listening = false;
+    	for (KKMultiServerThread thread: threads){
+    		thread.interrupt();
+    	}
     }
 }

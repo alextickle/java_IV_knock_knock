@@ -1,4 +1,3 @@
-import java.io.*;
 import java.net.*;
 
 public class KnockKnockClient implements Runnable{
@@ -15,7 +14,7 @@ public class KnockKnockClient implements Runnable{
         } catch (UnknownHostException e) {
         	System.out.println("Don't know about host: " + laptopName + ".");
             System.exit(1);
-        } catch (IOException e) {
+        } catch (Exception e) {
         	System.out.println("Couldn't get I/O for the connection to: " + laptopName + ".");
             System.exit(1);
         }

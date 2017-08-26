@@ -1,6 +1,9 @@
 import java.net.*;
 
 public class KnockKnockClient implements Runnable{
+	/**
+	 * sets up a socket and a gui
+	 */
     public void run(){
 		Socket kkSocket = null;
 		int port = 4449;

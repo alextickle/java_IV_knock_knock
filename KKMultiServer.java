@@ -6,6 +6,9 @@ public class KKMultiServer implements Runnable{
 	ArrayList<KKMultiServerThread> threads = new ArrayList<KKMultiServerThread>();
 	KKMultiServerThread temp;
 	
+	/**
+	 * starts server
+	 */
     public void run() {
         ServerSocket serverSocket = null;
         
@@ -20,6 +23,7 @@ public class KKMultiServer implements Runnable{
         
         try {
 	    	while (listening){
+	    	   
 	  	       temp = new KKMultiServerThread(serverSocket.accept());
 	  	       threads.add(temp);
 	  	       temp.start();
@@ -32,6 +36,9 @@ public class KKMultiServer implements Runnable{
         
     }
     
+    /**
+     * called from ServerGui
+     */
     public void stopServer(){
     	listening = false;
     	for (KKMultiServerThread thread: threads){

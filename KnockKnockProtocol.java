@@ -25,9 +25,12 @@ public class KnockKnockProtocol {
     	
     }
     
+    /**
+     * loads jokes from a jokes.txt file
+     * @throws Exception
+     */
     public void loadJokes() throws Exception{
 		Scanner input = null;
-		// open file jokes.txt
 		
 		input = new Scanner(Paths.get("jokes.txt"));
 		

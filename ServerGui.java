@@ -53,6 +53,9 @@ public class ServerGui extends JFrame{
 		startServer.setVisible(true);
 		buttons[0] = startServer;
 		startServer.addActionListener(new ActionListener(){
+			/**
+			 * anonymous inner class used to start server on click and rearrange buttons
+			 */
 			public void actionPerformed(ActionEvent event){
 				try {
 					startServer();
@@ -70,6 +73,9 @@ public class ServerGui extends JFrame{
 		buttons[1] = stopServer;
 		stopServer.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event){
+				/**
+				 * stops server and hides create client button
+				 */
 				try {
 					stopServer();
 					instructionsLabel.setText("Server stopped");
@@ -98,19 +104,29 @@ public class ServerGui extends JFrame{
 		
 	}
 		
-	// opens view as a JFrame
+	/**
+	 *  opens view as a JFrame
+	 */
 	public void start(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(500, 400);
 		this.setVisible(true);
 	}
 	
+	/**
+	 * start server
+	 * @throws Exception
+	 */
 	public void startServer() throws Exception{
 		server = new KKMultiServer();
 		thread = new Thread(server);
 		thread.start();
 	}
 	
+	/**
+	 * stop server
+	 * @throws Exception
+	 */
 	public void stopServer() throws Exception{
 		server.listening = false;
 	}

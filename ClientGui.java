@@ -42,21 +42,30 @@ public class ClientGui extends JFrame{
 	private JLabel serverMessageLabel;
 	private JLabel instructionsLabel;
 	
-	
+	/**
+	 * Socket is passed to the gui constructor from the client so that it can be closed
+	 * with the click of a button
+	 * @param socket
+	 */
 	public ClientGui(Socket socket){
 		super("Client");
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		} catch (Exception e1) {}
+		} catch (Exception e) {}
 		inputString = "";
 		serverMessage = "";
 		
-		// initialize main panel
+		
+		/**
+		 *  initialize main panel
+		 */
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(2, 1));
 		
-		// initialize instructions panel
+		/**
+		 *  initialize instructions panel
+		 */
 		instructionsPanel = new JPanel();
 		instructionsPanel.setLayout(new GridLayout(3, 1));
 		instructionsLabel = new JLabel("", SwingConstants.CENTER);
@@ -67,13 +76,17 @@ public class ClientGui extends JFrame{
 		instructionsPanel.add(serverMessageLabel);
 		mainPanel.add(instructionsPanel);
 		
-		// initialize input panel
+		/**
+		 *  initialize input panel
+		 */
 		inputPanel = new JPanel();
 		inputField = new JTextField("", 15);
 		inputPanel.add(inputField);
 		mainPanel.add(inputPanel);
 		
-		// initialize button panel
+		/**
+		 *  initialize button panel
+		 */
 		buttons = new JButton[2];
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
@@ -83,7 +96,9 @@ public class ClientGui extends JFrame{
 		buttons[0] = stopButton;
 		stopButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event){
-				// immediately close socket and ClientGui
+				/**
+				 * immediately close socket and ClientGui
+				 */
 				try {
 					out.close();
 					in.close();
@@ -100,6 +115,9 @@ public class ClientGui extends JFrame{
 		buttons[1] = sendButton;
 		sendButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event){
+				/**
+				 * send user message to server
+				 */
 				inputString = inputField.getText();
 				System.out.println(inputString);
 				out.println(inputString);
@@ -117,12 +135,14 @@ public class ClientGui extends JFrame{
 		add(mainPanel, BorderLayout.CENTER);
 		try {
 			this.start();
-		} catch (Exception e){
-		}
+		} catch (Exception e){}
 		
 	}
 		
-	// opens view as a JFrame
+	/**
+	 * opens view as a JFrame
+	 * @throws Exception
+	 */
 	public void start() throws Exception{
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(500, 400);
@@ -135,15 +155,23 @@ public class ClientGui extends JFrame{
 			}
 	}
 
-	
+	/**
+	 * @param str
+	 */
 	public void setInstructionLabel(String str){
 		this.instructionsLabel.setText(str);
 	}
 	
+	/**
+	 * @param str
+	 */
 	public void setErrorsLabel(String str){
 		this.errorsLabel.setText(str);
 	}
 	
+	/**
+	 * @param str
+	 */
 	public void setServerMessageLabel(String str){
 		this.serverMessageLabel.setText(str);
 	}

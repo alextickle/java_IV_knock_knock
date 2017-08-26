@@ -3,6 +3,7 @@ import java.net.*;
 
 public class KnockKnockClient {
     public static void main(String[] args) throws IOException {
+    	ClientGui gui = new ClientGui();
 
         Socket kkSocket = null;
         PrintWriter out = null;

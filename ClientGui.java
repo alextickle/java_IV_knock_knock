@@ -1,13 +1,8 @@
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,13 +10,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
-
 public class ClientGui extends JFrame{
 	private final JButton[] buttons;
+	private String inputString;
+	private String serverMessage;
 	public static enum State {
 		AWAITING_SERVER, AWAITING_USER
 	};
@@ -43,13 +35,15 @@ public class ClientGui extends JFrame{
 	// instructions panel
 	private final JPanel instructionsPanel;
 	private JLabel errorsLabel;
-	private JLabel serverMessage;
+	private JLabel serverMesageLabel;
 	private JLabel instructionsLabel;
 	
 	
 	public ClientGui(){
 		super("Knock Knock");
 		this.state = State.AWAITING_SERVER;
+		inputString = "";
+		serverMessage = "";
 		
 		// initialize main panel
 		mainPanel = new JPanel();
@@ -60,16 +54,15 @@ public class ClientGui extends JFrame{
 		instructionsPanel.setLayout(new GridLayout(3, 1));
 		instructionsLabel = new JLabel("No instructions yet!", SwingConstants.CENTER);
 		instructionsPanel.add(instructionsLabel);
-		errorsLabel = new JLabel("No errors yet!", SwingConstants.CENTER);
+		errorsLabel = new JLabel("", SwingConstants.CENTER);
 		instructionsPanel.add(errorsLabel);
-		serverMessage = new JLabel("No server message yet!", SwingConstants.CENTER);
-		instructionsPanel.add(serverMessage);
+		serverMesageLabel = new JLabel("No server message yet!", SwingConstants.CENTER);
+		instructionsPanel.add(serverMesageLabel);
 		mainPanel.add(instructionsPanel);
 		
 		// initialize input panel
 		inputPanel = new JPanel();
-		inputField = new JTextField();
-		inputField.setText("Testing - Input field");
+		inputField = new JTextField("", 15);
 		inputPanel.add(inputField);
 		mainPanel.add(inputPanel);
 		
@@ -94,7 +87,13 @@ public class ClientGui extends JFrame{
 		buttons[1] = sendButton;
 		sendButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event){
-				// TODO send input to server, set state to AWAITING_SERVER
+				inputString = inputField.getText();
+				System.out.println(inputString);
+				// TODO send to server
+				inputField.setText("");
+				serverMessage = "";
+				inputString = "";
+				state = State.AWAITING_SERVER;
 		    }
 		});
 		
@@ -115,7 +114,4 @@ public class ClientGui extends JFrame{
 		this.setVisible(true);
 	}
 	
-	public void getInput(){
-		String id = inputField.getText();
-	}
 }
